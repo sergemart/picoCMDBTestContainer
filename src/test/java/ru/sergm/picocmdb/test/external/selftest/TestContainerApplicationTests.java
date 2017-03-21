@@ -1,4 +1,4 @@
-package com.userFront.test.external;
+package ru.sergm.picocmdb.test.external.selftest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +10,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class TestContainerApplicationTests {
 
 	@Test
-	public void contextLoads() {
+	public void home_Page_Opens() {
+		
 	}
 
 }
