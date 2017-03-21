@@ -49,10 +49,32 @@
 				<configuration>
 					<!-- to pass JVM the correct encoding which corresponds to Spring Boot encoding settings -->
 					<argLine>-Dfile.encoding=UTF-8</argLine>
-					<includes>**/*Test.java</includes>
-					<includes>**/*Tests.java</includes>
-					<includes>**/*TestSuite.java</includes>
+					<!-- to add *TestSuite to default search patterns -->
+					<!--includes>**/*TestSuite.java, **/*Tests.java, **/*Test.java, **/*TestCase.java</includes-->
 				</configuration>
+				<executions>
+					<execution>
+						<id>selftest</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<includes>**/selftest/*TestSuite.java</includes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>main</id>
+						<phase>integration-test</phase>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<includes>**/*TestSuite.java, **/*Tests.java, **/*Test.java, **/*TestCase.java</includes>
+							<excludes>**/selftest/*</excludes>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

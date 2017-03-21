@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TestContainerApplicationTests {
+public class TestContainerApplicationTestSuite {
 
 	@Test
 	public void home_Page_Opens() {
