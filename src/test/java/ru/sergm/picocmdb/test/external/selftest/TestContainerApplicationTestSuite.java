@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class TestContainerApplicationTestSuite {
 
 	@Test
-	public void home_Page_Opens() {
+	public void context_Loads() {
 		
 	}
 

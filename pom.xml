@@ -38,39 +38,54 @@
 			<scope>test</scope>
 		</dependency>
 
+
+
 	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
-				<!-- to configure default test-runner plugin -->
+				<!-- to configure default unit-test-runner plugin -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<!-- to pass JVM the correct encoding which corresponds to Spring Boot encoding settings -->
 					<argLine>-Dfile.encoding=UTF-8</argLine>
-					<!-- to add *TestSuite to default search patterns -->
-					<!--includes>**/*TestSuite.java, **/*Tests.java, **/*Test.java, **/*TestCase.java</includes-->
 				</configuration>
 				<executions>
 					<execution>
-						<id>selftest</id>
 						<phase>test</phase>
 						<goals>
 							<goal>test</goal>
 						</goals>
 						<configuration>
+							<!-- to run tests of the tests -->
 							<includes>**/selftest/*TestSuite.java</includes>
 						</configuration>
 					</execution>
+				</executions>
+			</plugin>
+
+			<!-- to configure integration-test-runner plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<!-- to pass JVM the correct encoding which corresponds to Spring Boot encoding settings -->
+					<argLine>-Dfile.encoding=UTF-8</argLine>
+				</configuration>
+				<executions>
 					<execution>
-						<id>main</id>
 						<phase>integration-test</phase>
 						<goals>
-							<goal>test</goal>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
 						</goals>
 						<configuration>
+							<!-- to add *TestSuite to default search patterns -->
 							<includes>**/*TestSuite.java, **/*Tests.java, **/*Test.java, **/*TestCase.java</includes>
+							<!-- to exclude tests of the tests -->
 							<excludes>**/selftest/*</excludes>
 						</configuration>
 					</execution>
@@ -78,6 +93,43 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<!-- run at local workstation -->
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<mvn.webdriver.class>stub</mvn.webdriver.class>
+			</properties>
+		</profile>
+
+		<!-- run at Jenkins -->
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<mvn.webdriver.class>stub</mvn.webdriver.class>
+			</properties>
+			<dependencies>
+				<!-- headless browser w/ driver -->
+				<dependency>
+					<groupId>org.seleniumhq.selenium</groupId>
+					<artifactId>htmlunit-driver</artifactId>
+					<version>2.25</version>
+				</dependency>
+				<dependency>
+					<groupId>net.sourceforge.htmlunit</groupId>
+					<artifactId>htmlunit</artifactId>
+					<version>2.25</version> <!-- override old transitive dependency in the driver -->
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 
 
 </project>

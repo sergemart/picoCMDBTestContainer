@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 public class HomePageTestSuite {
 
 	@Test
-	public void home_Page_Should_Open() {
+	public void home_Page_Opens() {
 		assertEquals("", "");
 	}
 
