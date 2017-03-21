@@ -44,8 +44,8 @@
 
 	<build>
 		<plugins>
+			<!-- to general configure default unit-test-runner plugin -->
 			<plugin>
-				<!-- to configure default unit-test-runner plugin -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
@@ -66,7 +66,7 @@
 				</executions>
 			</plugin>
 
-			<!-- to configure integration-test-runner plugin -->
+			<!-- to general configure integration-test-runner plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
@@ -115,6 +115,24 @@
 			<properties>
 				<mvn.webdriver.class>stub</mvn.webdriver.class>
 			</properties>
+			<build>
+				<plugins>
+					<!-- to turn off unit-test-runner plugin -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<skipTests>true</skipTests>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>test</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+
 			<dependencies>
 				<!-- headless browser w/ driver -->
 				<dependency>
