@@ -150,11 +150,6 @@
 						<configuration>
 							<skipTests>true</skipTests>
 						</configuration>
-						<executions>
-							<execution>
-								<phase>test</phase>
-							</execution>
-						</executions>
 					</plugin>
 					<!-- to define Jenking-running main runner sessings -->
 					<plugin>
