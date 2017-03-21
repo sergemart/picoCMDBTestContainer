@@ -38,8 +38,13 @@
 			<scope>test</scope>
 		</dependency>
 
-
-
+		<!-- QA tools -->
+		<dependency>
+			<groupId>com.codeborne</groupId>
+			<artifactId>selenide</artifactId>
+			<version>4.3</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -50,7 +55,9 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<!-- to pass JVM the correct encoding which corresponds to Spring Boot encoding settings -->
-					<argLine>-Dfile.encoding=UTF-8</argLine>
+					<systemPropertyVariables>
+						<file.encoding>UTF-8</file.encoding>
+					</systemPropertyVariables>
 				</configuration>
 				<executions>
 					<execution>
@@ -59,7 +66,7 @@
 							<goal>test</goal>
 						</goals>
 						<configuration>
-							<!-- to run tests of the tests -->
+							<!-- filter to run tests of the tests -->
 							<includes>**/selftest/*TestSuite.java</includes>
 						</configuration>
 					</execution>
@@ -72,8 +79,10 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>2.18.1</version>
 				<configuration>
-					<!-- to pass JVM the correct encoding which corresponds to Spring Boot encoding settings -->
-					<argLine>-Dfile.encoding=UTF-8</argLine>
+					<systemPropertyVariables>
+						<!-- to pass JVM the correct encoding which corresponds to Spring Boot encoding settings -->
+						<file.encoding>UTF-8</file.encoding>
+					</systemPropertyVariables>
 				</configuration>
 				<executions>
 					<execution>
@@ -83,9 +92,9 @@
 							<goal>verify</goal>
 						</goals>
 						<configuration>
-							<!-- to add *TestSuite to default search patterns -->
+							<!-- filter to add *TestSuite to default search patterns -->
 							<includes>**/*TestSuite.java, **/*Tests.java, **/*Test.java, **/*TestCase.java</includes>
-							<!-- to exclude tests of the tests -->
+							<!-- filter to exclude tests of the tests -->
 							<excludes>**/selftest/*</excludes>
 						</configuration>
 					</execution>
@@ -101,9 +110,29 @@
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
-			<properties>
-				<mvn.webdriver.class>stub</mvn.webdriver.class>
-			</properties>
+			<build>
+				<plugins>
+					<!-- to turn on/off unit-test-runner plugin -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<skipTests>true</skipTests>
+						</configuration>
+					</plugin>
+					<!-- to define local-running main runner sessings -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<configuration>
+							<systemPropertyVariables>
+								<!-- to pass JVM and Selenide the browser to use -->
+								<browser>htmlunit</browser>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 
 		<!-- run at Jenkins -->
@@ -112,12 +141,9 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			<properties>
-				<mvn.webdriver.class>stub</mvn.webdriver.class>
-			</properties>
 			<build>
 				<plugins>
-					<!-- to turn off unit-test-runner plugin -->
+					<!-- to turn on/off unit-test-runner plugin -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
@@ -130,22 +156,19 @@
 							</execution>
 						</executions>
 					</plugin>
+					<!-- to define Jenking-running main runner sessings -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<configuration>
+							<systemPropertyVariables>
+								<!-- to pass JVM and Selenide the browser to use -->
+								<browser>htmlunit</browser>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
 				</plugins>
 			</build>
-
-			<dependencies>
-				<!-- headless browser w/ driver -->
-				<dependency>
-					<groupId>org.seleniumhq.selenium</groupId>
-					<artifactId>htmlunit-driver</artifactId>
-					<version>2.25</version>
-				</dependency>
-				<dependency>
-					<groupId>net.sourceforge.htmlunit</groupId>
-					<artifactId>htmlunit</artifactId>
-					<version>2.25</version> <!-- override old transitive dependency in the driver -->
-				</dependency>
-			</dependencies>
 		</profile>
 	</profiles>
 
