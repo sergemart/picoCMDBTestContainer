@@ -1,5 +1,6 @@
 package ru.sergm.picocmdb.test.external;
 
+import com.codeborne.selenide.SelenideElement;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.Condition.*;
 
+import ru.sergm.picocmdb.test.external.pageobject.*;
 
 
 @RunWith(SpringRunner.class)
@@ -18,8 +20,9 @@ public class HomePageTestSuite {
 
 	@Test
 	public void home_Page_Opens() {
-		open("http://tomcat.igelkott:8080/picocmdb/");
-		//assertEquals("", "");
+		HomePage homePage = open("http://tomcat.igelkott:8080/picocmdb/", HomePage.class);
+		//homePage.getTitle().shouldHave(text("picoCMDB"));
+		assertEquals("picoCMDB", homePage.getTitle().innerText());
 	}
 
 }

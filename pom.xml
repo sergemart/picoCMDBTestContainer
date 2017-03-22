@@ -43,7 +43,6 @@
 			<groupId>com.codeborne</groupId>
 			<artifactId>selenide</artifactId>
 			<version>4.3</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -55,9 +54,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<!-- to pass JVM the correct encoding which corresponds to Spring Boot encoding settings -->
-					<systemPropertyVariables>
-						<file.encoding>UTF-8</file.encoding>
-					</systemPropertyVariables>
+					<argLine>-Dfile.encoding=UTF-8</argLine>
 				</configuration>
 				<executions>
 					<execution>
@@ -79,10 +76,8 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>2.18.1</version>
 				<configuration>
-					<systemPropertyVariables>
-						<!-- to pass JVM the correct encoding which corresponds to Spring Boot encoding settings -->
-						<file.encoding>UTF-8</file.encoding>
-					</systemPropertyVariables>
+					<!-- to pass JVM the correct encoding which corresponds to Spring Boot encoding settings -->
+					<argLine>-Dfile.encoding=UTF-8</argLine>
 				</configuration>
 				<executions>
 					<execution>
@@ -96,6 +91,10 @@
 							<includes>**/*TestSuite.java, **/*Tests.java, **/*Test.java, **/*TestCase.java</includes>
 							<!-- filter to exclude tests of the tests -->
 							<excludes>**/selftest/*</excludes>
+							<systemPropertyVariables>
+								<!-- to pass JVM and Selenide the browser to use -->
+								<browser>${mvn.browser}</browser>
+							</systemPropertyVariables>
 						</configuration>
 					</execution>
 				</executions>
@@ -107,6 +106,9 @@
 		<!-- run at local workstation -->
 		<profile>
 			<id>dev</id>
+			<properties>
+				<mvn.browser>htmlunit</mvn.browser>
+			</properties>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
@@ -120,17 +122,6 @@
 							<skipTests>true</skipTests>
 						</configuration>
 					</plugin>
-					<!-- to define local-running main runner sessings -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-failsafe-plugin</artifactId>
-						<configuration>
-							<systemPropertyVariables>
-								<!-- to pass JVM and Selenide the browser to use -->
-								<browser>htmlunit</browser>
-							</systemPropertyVariables>
-						</configuration>
-					</plugin>
 				</plugins>
 			</build>
 		</profile>
@@ -138,6 +129,9 @@
 		<!-- run at Jenkins -->
 		<profile>
 			<id>test</id>
+			<properties>
+				<mvn.browser>htmlunit</mvn.browser>
+			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
@@ -149,17 +143,6 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<configuration>
 							<skipTests>true</skipTests>
-						</configuration>
-					</plugin>
-					<!-- to define Jenking-running main runner sessings -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-failsafe-plugin</artifactId>
-						<configuration>
-							<systemPropertyVariables>
-								<!-- to pass JVM and Selenide the browser to use -->
-								<browser>htmlunit</browser>
-							</systemPropertyVariables>
 						</configuration>
 					</plugin>
 				</plugins>
