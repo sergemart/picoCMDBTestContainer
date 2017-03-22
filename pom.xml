@@ -22,8 +22,19 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<!-- Turn off default maven-deploy-plugin -->
+		<!-- turn off default maven-deploy-plugin -->
 		<maven.deploy.skip>true</maven.deploy.skip>
+		<!-- custom properties -->
+			<!-- runner control -->
+		<mvn.browser>stub</mvn.browser>									<!-- set in a profile -->
+		<mvn.skipUnitTests>stub</mvn.skipUnitTests>                 	<!-- set in a profile -->
+		<mvn.skipIntegrationTests>stub</mvn.skipIntegrationTests>		<!-- set in a profile -->
+			<!-- SuT -->
+		<mvn.sut.app.url>http://tomcat.igelkott:8080/picocmdb</mvn.sut.app.url>
+				<!-- to rewrite placeholders in application.properties -->
+		<mvn.sut.datasource.url>jdbc:mysql://localhost:3306/picocmdb?useUnicode=yes&amp;characterEncoding=UTF-8</mvn.sut.datasource.url>
+		<mvn.sut.datasource.username>root</mvn.sut.datasource.username>
+		<mvn.sut.datasource.password>root</mvn.sut.datasource.password>
 	</properties>
 
 	<dependencies>
@@ -58,6 +69,7 @@
 				</configuration>
 				<executions>
 					<execution>
+						<id>default-test</id>	<!-- to override built-in execution w/ same name -->
 						<phase>test</phase>
 						<goals>
 							<goal>test</goal>
