@@ -65,6 +65,7 @@
 						<configuration>
 							<!-- filter to run tests of the tests -->
 							<includes>**/selftest/*TestSuite.java</includes>
+							<!-- turn on/off testing of the tests; set in profile -->
 							<skipTests>${mvn.skipUnitTests}</skipTests>
 						</configuration>
 					</execution>
@@ -92,8 +93,10 @@
 							<includes>**/*TestSuite.java, **/*Tests.java, **/*Test.java, **/*TestCase.java</includes>
 							<!-- filter to exclude tests of the tests -->
 							<excludes>**/selftest/*</excludes>
+							<!-- turn on/off main routine, just in case; set in profile -->
+							<skipTests>${mvn.skipIntegrationTests}</skipTests>
 							<systemPropertyVariables>
-								<!-- to pass JVM and Selenide the browser to use -->
+								<!-- to pass JVM and Selenide the browser to use; set in profile -->
 								<browser>${mvn.browser}</browser>
 							</systemPropertyVariables>
 						</configuration>
@@ -104,52 +107,43 @@
 	</build>
 
 	<profiles>
-		<!-- run at local workstation -->
+		<!-- run self-tests at local workstation -->
+		<profile>
+			<id>dev-selftest</id>
+			<properties>
+				<mvn.browser>htmlunit</mvn.browser>
+				<mvn.skipUnitTests>false</mvn.skipUnitTests>
+				<mvn.skipIntegrationTests>true</mvn.skipIntegrationTests>
+			</properties>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+		</profile>
+
+		<!-- run main routine at local workstation -->
 		<profile>
 			<id>dev</id>
 			<properties>
 				<mvn.browser>htmlunit</mvn.browser>
 				<mvn.skipUnitTests>true</mvn.skipUnitTests>
+				<mvn.skipIntegrationTests>false</mvn.skipIntegrationTests>
 			</properties>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
-			<build>
-				<plugins>
-					<!-- to turn on/off unit-test-runner plugin -->
-					<!--plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<configuration>
-							<skipTests>true</skipTests>
-						</configuration>
-					</plugin-->
-				</plugins>
-			</build>
 		</profile>
 
-		<!-- run at Jenkins -->
+		<!-- run main routine at Jenkins -->
 		<profile>
 			<id>test</id>
 			<properties>
 				<mvn.browser>htmlunit</mvn.browser>
 				<mvn.skipUnitTests>true</mvn.skipUnitTests>
+				<mvn.skipIntegrationTests>false</mvn.skipIntegrationTests>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			<build>
-				<plugins>
-					<!-- to turn on/off unit-test-runner plugin -->
-					<!-- plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<configuration>
-							<skipTests>true</skipTests>
-						</configuration>
-					</plugin-->
-				</plugins>
-			</build>
 		</profile>
 	</profiles>
 
