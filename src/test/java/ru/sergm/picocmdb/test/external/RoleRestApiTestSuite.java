@@ -1,24 +1,47 @@
 package ru.sergm.picocmdb.test.external;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static io.restassured.RestAssured.*;
+import static io.restassured.matcher.RestAssuredMatchers.*;
+import static org.hamcrest.Matchers.*;
+import static io.restassured.module.jsv.JsonSchemaValidator.*;
+
 import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.junit.Before;
+import org.junit.runner.RunWith;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class RoleRestApiTestSuite {
 
-	@Autowired
-	//private TestRestTemplate restTemplate;
+	@Test
+	public void service_Returns_Role_List() {
+		when().
+				get("http://tomcat.igelkott:8080/picocmdb/rest/roles").
+		then().
+				assertThat().statusCode(200).
+				and().
+				assertThat().body( "get(0).id", equalTo(1) ).
+				assertThat().body( "get(0).name", equalToIgnoringCase("admin") ).
+				assertThat().body( "get(0).system", equalTo(true) );
+	}
 
 
 	@Test
-	public void service_Returns_Role_List() {
+	public void service_Returns_Role() {
+		when().
+				get("http://tomcat.igelkott:8080/picocmdb/rest/roles/admin").
+		then().
+				assertThat().statusCode(200).
+				and().
+				assertThat().body( "id", equalTo(1) ).
+				assertThat().body( "name", equalToIgnoringCase("admin") ).
+				assertThat().body( "system", equalTo(true) );
 	}
 
 }
