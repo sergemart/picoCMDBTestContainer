@@ -26,8 +26,7 @@ public class RoleRestApiTestSuite {
 		then().
 				assertThat().statusCode(200).
 				and().
-				assertThat().body( "get(0).id", equalTo(1) ).
-				assertThat().body( "get(0).name", equalToIgnoringCase("admin") ).
+				assertThat().body( "get(0).id", equalTo("ADMINISTRATOR") ).
 				assertThat().body( "get(0).system", equalTo(true) );
 	}
 
@@ -35,12 +34,11 @@ public class RoleRestApiTestSuite {
 	@Test
 	public void service_Returns_Role() {
 		when().
-				get("http://tomcat.igelkott:8080/picocmdb/rest/roles/admin").
+				get("http://tomcat.igelkott:8080/picocmdb/rest/roles/administrator").
 		then().
 				assertThat().statusCode(200).
 				and().
-				assertThat().body( "id", equalTo(1) ).
-				assertThat().body( "name", equalToIgnoringCase("admin") ).
+				assertThat().body( "id", equalTo("ADMINISTRATOR") ).
 				assertThat().body( "system", equalTo(true) );
 	}
 
