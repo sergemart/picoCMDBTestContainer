@@ -42,4 +42,16 @@ public class RoleRestApiTestSuite {
 				assertThat().body( "system", equalTo(true) );
 	}
 
+
+	@Test
+	public void service_Returns_Error_When_No_Role_Found() {
+		when().
+				get("http://tomcat.igelkott:8080/picocmdb/rest/roles/administrator22").
+		then().
+				assertThat().statusCode(400).
+				and().
+				assertThat().body( "exceptionName", equalTo("ru.sergm.picocmdb.exception.NoSuchObjectException") ).
+				assertThat().body( "errorCode", equalTo("1000404") );
+	}
+
 }
