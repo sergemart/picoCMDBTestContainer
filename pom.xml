@@ -30,10 +30,10 @@
 		<mvn.skipUnitTests>stub</mvn.skipUnitTests>                 	<!-- set in a profile -->
 		<mvn.skipIntegrationTests>stub</mvn.skipIntegrationTests>		<!-- set in a profile -->
 			<!-- SuT -->
-		<mvn.sut.app.url>http://tomcat.igelkott:8080/picocmdb</mvn.sut.app.url>
-		<mvn.sut.datasource.url>jdbc:mysql://localhost:3306/picocmdb?useUnicode=yes&amp;characterEncoding=UTF-8</mvn.sut.datasource.url>
+		<mvn.sut.url>http://tomcat.igelkott:8080/picocmdb</mvn.sut.url>
+		<!--mvn.sut.datasource.url>jdbc:mysql://localhost:3306/picocmdb?useUnicode=yes&amp;characterEncoding=UTF-8</mvn.sut.datasource.url>
 		<mvn.sut.datasource.username>root</mvn.sut.datasource.username>
-		<mvn.sut.datasource.password>root</mvn.sut.datasource.password>
+		<mvn.sut.datasource.password>root</mvn.sut.datasource.password-->
 	</properties>
 
 	<dependencies>
@@ -68,6 +68,14 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<!-- setup resources plugin to filter the dir which contains application.properties file, to replace maven-set properties there -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
 		<plugins>
 			<!-- to configure default unit-test-runner plugin -->
 			<plugin>
@@ -117,12 +125,6 @@
 							<excludes>**/selftest/*</excludes>
 							<!-- turn on/off main routine, just in case; set in profile -->
 							<skipTests>${mvn.skipIntegrationTests}</skipTests>
-							<systemPropertyVariables>
-								<!-- to deliver into code the browser to use; set in profile -->
-								<browser>${mvn.browser}</browser>
-								<!-- to deliver SuT URL into code -->
-								<sut.app.url>${mvn.sut.app.url}</sut.app.url>
-							</systemPropertyVariables>
 						</configuration>
 					</execution>
 				</executions>

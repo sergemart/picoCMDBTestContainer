@@ -6,24 +6,26 @@ import org.springframework.context.annotation.Configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 
+import javax.annotation.PostConstruct;
 import java.util.Properties;
 
 
 @Configuration
+@PropertySource("classpath:testing.properties")
 public class TestingToolsConfig {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TestingToolsConfig.class);
 
+	@Autowired
+	private Environment env;
 
-	@Bean
-	public Properties testingProperties() {
-		Properties properties = new Properties();
-		//System.setProperty("browser", "");
-		properties.setProperty("sut.app.url", "");
 
-		LOG.info("Invoked.");
-		return properties;
+	@PostConstruct
+	private void initSystemProperties() {
+		System.setProperty("browser", env.getProperty("testing.browser")); // for Selenide
 	}
 
 }
