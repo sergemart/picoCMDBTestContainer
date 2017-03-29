@@ -6,13 +6,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.RestAssuredMatchers.*;
 import static org.hamcrest.Matchers.*;
-import static io.restassured.module.jsv.JsonSchemaValidator.*;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -66,12 +62,17 @@ public class RoleRestApiTestSuite {
 
 	@Test
 	public void service_Returns_Error_When_No_Role_Found() {
+		given().
+				log().all().
+				header("Accept-Language", "ru-RU").
 		when().
 				get(baseUrl + "/roles/administrator22").
 		then().
+				log().all().
 				assertThat().statusCode(400).
 				and().
 				assertThat().body( "exceptionName", equalTo("ru.sergm.picocmdb.exception.NoSuchObjectException") ).
+				assertThat().body( "errorName", equalTo("ROLENOTFOUND") ).
 				assertThat().body( "errorCode", equalTo("1000404") );
 	}
 
