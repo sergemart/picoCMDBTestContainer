@@ -1,33 +1,26 @@
-package ru.sergm.picocmdb.test.external;
+package ru.sergm.picocmdb.test.external.web;
 
 import org.junit.Before;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+
 import static com.codeborne.selenide.Selenide.*;
 
+import ru.sergm.picocmdb.test.external.AbstractTests;
 import ru.sergm.picocmdb.test.external.pageobject.*;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class HomePageTestSuite {
+public class HomePageTests extends AbstractTests {
 
-	@Autowired
-	private Environment env;
 
 	private String baseUrl;
 
 
 	@Before
 	public void setUp() {
-		this.baseUrl = env.getProperty("testing.sut.ui.url");
+		this.baseUrl = super.env.getProperty("testing.sut.ui.url");
 	}
 
 

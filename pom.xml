@@ -31,9 +31,9 @@
 		<mvn.skipIntegrationTests>stub</mvn.skipIntegrationTests>		<!-- set in a profile -->
 			<!-- SuT -->
 		<mvn.sut.url>http://tomcat.igelkott:8080/picocmdb</mvn.sut.url>
-		<!--mvn.sut.datasource.url>jdbc:mysql://localhost:3306/picocmdb?useUnicode=yes&amp;characterEncoding=UTF-8</mvn.sut.datasource.url>
+		<mvn.sut.datasource.url>jdbc:mysql://mysql.igelkott:3306/picocmdb?useUnicode=yes&amp;characterEncoding=UTF-8</mvn.sut.datasource.url>
 		<mvn.sut.datasource.username>root</mvn.sut.datasource.username>
-		<mvn.sut.datasource.password>root</mvn.sut.datasource.password-->
+		<mvn.sut.datasource.password>root</mvn.sut.datasource.password>
 	</properties>
 
 	<dependencies>
@@ -45,7 +45,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 
 		<!-- QA tools -->
@@ -64,6 +67,13 @@
 			<artifactId>json-schema-validator</artifactId>
 			<version>3.0.2</version>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- SuT database connector -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.41</version>
 		</dependency>
 	</dependencies>
 
@@ -94,7 +104,7 @@
 						</goals>
 						<configuration>
 							<!-- filter to run tests of the tests -->
-							<includes>**/selftest/*TestSuite.java</includes>
+							<includes>**/selftest/*Tests.java</includes>
 							<!-- turn on/off testing of the tests; set in profile -->
 							<skipTests>${mvn.skipUnitTests}</skipTests>
 						</configuration>
@@ -120,7 +130,7 @@
 						</goals>
 						<configuration>
 							<!-- filter to add *TestSuite to default search patterns -->
-							<includes>**/*TestSuite.java, **/*Tests.java, **/*Test.java, **/*TestCase.java</includes>
+							<includes>**/*Tests.java, **/*Test.java, **/*TestCase.java</includes>
 							<!-- filter to exclude tests of the tests -->
 							<excludes>**/selftest/*</excludes>
 							<!-- turn on/off main routine, just in case; set in profile -->

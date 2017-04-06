@@ -1,9 +1,4 @@
-package ru.sergm.picocmdb.test.external;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.env.Environment;
-import org.springframework.test.context.junit4.SpringRunner;
+package ru.sergm.picocmdb.test.external.restapi.atomic;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -11,22 +6,17 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.Before;
-import org.junit.runner.RunWith;
+import ru.sergm.picocmdb.test.external.AbstractTests;
 
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class RoleRestApiTestSuite {
-
-	@Autowired
-	private Environment env;
+public class RoleRestApiTests extends AbstractTests {
 
 	private String baseUrl;
 
 
 	@Before
 	public void setUp() {
-		this.baseUrl = env.getProperty("testing.sut.rest.url");
+		this.baseUrl = super.env.getProperty("testing.sut.rest.url");
 	}
 
 
@@ -39,7 +29,7 @@ public class RoleRestApiTestSuite {
 	@Test
 	public void service_Returns_Role_List() {
 		when().
-				get(baseUrl + "/roles").
+				get(this.baseUrl + "/roles").
 		then().
 				assertThat().statusCode(200).
 				and().
@@ -51,7 +41,7 @@ public class RoleRestApiTestSuite {
 	@Test
 	public void service_Returns_Role() {
 		when().
-				get(baseUrl + "/roles/administrator").
+				get(this.baseUrl + "/roles/administrator").
 		then().
 				assertThat().statusCode(200).
 				and().
@@ -66,7 +56,7 @@ public class RoleRestApiTestSuite {
 				log().all().
 				header("Accept-Language", "ru-RU").
 		when().
-				get(baseUrl + "/roles/administrator22").
+				get(this.baseUrl + "/roles/administrator22").
 		then().
 				log().all().
 				assertThat().statusCode(400).
