@@ -1,5 +1,7 @@
 package com.github.sergemart.picocmdb.test.external.junitrule;
 
+import java.util.Arrays;
+
 /**
  * Represents parameters to be passed to JdbcTemplate.update()
  */
@@ -24,4 +26,12 @@ class JdbcTask {
 		this.sqlQueryParameters = sqlQueryParameters;
 	}
 
+
+	@Override
+	public String toString() {
+		return "JdbcTask{" +
+				"sqlQuery='" + sqlQuery + '\'' +
+				", sqlQueryParameters=" + Arrays.toString(sqlQueryParameters) +
+				'}';
+	}
 }

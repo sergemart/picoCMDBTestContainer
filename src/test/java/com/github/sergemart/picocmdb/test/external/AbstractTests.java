@@ -18,8 +18,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class AbstractTests {
 
 	private static AtomicInteger counter = new AtomicInteger(0);
+	protected String baseUiUrl;
+	protected String baseRestUrl;
 	@Autowired
-	protected Environment env;
+	private Environment env;
 	@Autowired
 	protected JdbcTemplate jdbcTemplate;
 	@Rule
@@ -32,9 +34,12 @@ public abstract class AbstractTests {
 	}
 
 
-	// to inject beans to rules (rules are instantiated before Spring context loads)
 	@Before
-	public void setUpRules() {
+	public void basicSetUp() { // attn: do not override
+		this.baseUiUrl = this.env.getProperty("testing.sut.ui.url");
+		this.baseRestUrl = this.env.getProperty("testing.sut.rest.url");
+
+		// to inject beans to rules (rules are instantiated before Spring context loads)
 		jdbcCleaner.setJdbcTemplate(jdbcTemplate);
 	}
 

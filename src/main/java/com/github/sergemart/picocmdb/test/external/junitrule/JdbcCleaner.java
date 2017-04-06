@@ -13,7 +13,8 @@ import java.util.List;
 
 
 /**
- * Provides option to create database entities before a test and delete them after the test. The test should do JdbcCleaner.addTask() to register JDBC query to be executed after the test.
+ * Provides an option to manage (mainly delete) database entities after a test completion.
+ * The test should invoke JdbcCleaner.addTask() to register JDBC query to be executed after the test.
  */
 public class JdbcCleaner implements TestRule {
 
@@ -39,7 +40,6 @@ public class JdbcCleaner implements TestRule {
 	public Statement apply(final Statement base, final Description description) {
 		return new Statement() {
 
-			@SuppressWarnings("CaughtExceptionImmediatelyRethrown")
 			@Override
 			public void evaluate() throws Throwable {
 				try {
@@ -49,6 +49,7 @@ public class JdbcCleaner implements TestRule {
 					// iterate over execute parameters have been set in a test
 					for (JdbcTask jdbcTask : jdbcTaskList) {
 						jdbcTemplate.update(jdbcTask.getSqlQuery(), jdbcTask.getSqlQueryParameters());
+						LOG.info("Executed SQL: {}", jdbcTask.toString());
 					}
 				}
 			}
