@@ -61,7 +61,7 @@ public class RoleRestApiTests extends AbstractTests {
 				log().all().
 				assertThat().statusCode(400).
 				and().
-				assertThat().body( "exceptionName", equalTo("ru.sergm.picocmdb.exception.NoSuchObjectException") ).
+				assertThat().body( "exceptionName", equalTo("com.github.sergemart.picocmdb.exception.NoSuchObjectException") ).
 				assertThat().body( "errorName", equalTo("ROLENOTFOUND") ).
 				assertThat().body( "errorCode", equalTo("1000404") );
 	}
