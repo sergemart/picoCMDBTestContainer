@@ -1,4 +1,4 @@
-package ru.sergm.picocmdb.test.external;
+package com.github.sergemart.picocmdb.test.external;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package ru.sergm.picocmdb.test.external.junitrule;
+package com.github.sergemart.picocmdb.test.external.junitrule;
 
 /**
  * Represents parameters to be passed to JdbcTemplate.update()

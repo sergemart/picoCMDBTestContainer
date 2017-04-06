@@ -1,17 +1,14 @@
-package ru.sergm.picocmdb.test.external;
+package com.github.sergemart.picocmdb.test.external;
 
+import com.github.sergemart.picocmdb.test.external.junitrule.JdbcCleaner;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.sergm.picocmdb.test.external.junitrule.JdbcCleaner;
-import ru.sergm.picocmdb.test.external.restapi.atomic.RoleRestApiTests_SelfServiced;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

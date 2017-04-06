@@ -1,4 +1,4 @@
-package ru.sergm.picocmdb.test.external.selftest;
+package com.github.sergemart.picocmdb.test.external.selftest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

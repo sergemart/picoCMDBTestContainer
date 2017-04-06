@@ -1,20 +1,18 @@
-package ru.sergm.picocmdb.test.external.restapi.atomic;
+package com.github.sergemart.picocmdb.test.external.restapi.atomic;
 
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.sergm.picocmdb.test.external.AbstractTests;
-import ru.sergm.picocmdb.test.external.junitrule.JdbcCleaner;
 
 import static org.junit.Assert.assertNotNull;
-
+import static org.junit.Assert.assertNull;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertNull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.sergemart.picocmdb.test.external.AbstractTests;
 
 
 public class RoleRestApiTests_SelfServiced extends AbstractTests {
@@ -33,6 +31,7 @@ public class RoleRestApiTests_SelfServiced extends AbstractTests {
 	public void test_Suite_Prerequisites_Initialized() {
 		assertNotNull(this.baseUrl);
 		assertNotNull(super.jdbcTemplate);
+		assertNotNull(super.jdbcCleaner);
 	}
 
 

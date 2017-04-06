@@ -1,7 +1,6 @@
-package ru.sergm.picocmdb.test.external.config;
+package com.github.sergemart.picocmdb.test.external.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.slf4j.Logger;
@@ -10,7 +9,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
-import java.util.Properties;
 
 
 @Configuration

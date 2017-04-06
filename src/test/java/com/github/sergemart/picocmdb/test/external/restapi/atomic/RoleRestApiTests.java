@@ -1,4 +1,4 @@
-package ru.sergm.picocmdb.test.external.restapi.atomic;
+package com.github.sergemart.picocmdb.test.external.restapi.atomic;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.junit.Before;
-import ru.sergm.picocmdb.test.external.AbstractTests;
+import com.github.sergemart.picocmdb.test.external.AbstractTests;
 
 
 public class RoleRestApiTests extends AbstractTests {

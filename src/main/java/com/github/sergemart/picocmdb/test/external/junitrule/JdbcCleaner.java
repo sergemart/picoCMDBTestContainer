@@ -1,4 +1,4 @@
-package ru.sergm.picocmdb.test.external.junitrule;
+package com.github.sergemart.picocmdb.test.external.junitrule;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;

@@ -1,5 +1,6 @@
-package ru.sergm.picocmdb.test.external.web;
+package com.github.sergemart.picocmdb.test.external.web;
 
+import com.github.sergemart.picocmdb.test.external.pageobject.HomePage;
 import org.junit.Before;
 
 import static org.junit.Assert.assertEquals;
@@ -8,7 +9,7 @@ import org.junit.Test;
 
 import static com.codeborne.selenide.Selenide.*;
 
-import ru.sergm.picocmdb.test.external.AbstractTests;
+import com.github.sergemart.picocmdb.test.external.AbstractTests;
 import ru.sergm.picocmdb.test.external.pageobject.*;
 
 

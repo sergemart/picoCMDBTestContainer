@@ -1,4 +1,4 @@
-package ru.sergm.picocmdb.test.external.pageobject;
+package com.github.sergemart.picocmdb.test.external.pageobject;
 
 import org.openqa.selenium.By;
 import com.codeborne.selenide.SelenideElement;
