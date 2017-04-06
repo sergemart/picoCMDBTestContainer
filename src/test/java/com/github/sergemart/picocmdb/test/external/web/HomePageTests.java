@@ -10,7 +10,7 @@ import org.junit.Test;
 import static com.codeborne.selenide.Selenide.*;
 
 import com.github.sergemart.picocmdb.test.external.AbstractTests;
-import ru.sergm.picocmdb.test.external.pageobject.*;
+import com.github.sergemart.picocmdb.test.external.pageobject.*;
 
 
 public class HomePageTests extends AbstractTests {
