@@ -1,33 +1,27 @@
 package com.github.sergemart.picocmdb.test.external.restapi.atomic;
 
-import io.restassured.http.ContentType;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertNotNull;
+import io.restassured.http.ContentType;
 import static io.restassured.RestAssured.given;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 import com.github.sergemart.picocmdb.test.external.AbstractTests;
 
 
 public class RoleRestApiTests extends AbstractTests {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RoleRestApiTests.class);
-
-
 	@Test
 	public void test_Suite_Prerequisites_Initialized() {
-		assertNotNull(super.baseRestUrl);
-		assertNotNull(super.jdbcTemplate);
-		assertNotNull(super.jdbcCleaner);
+		assertThat(super.baseRestUrl, not(isEmptyOrNullString()));
+		assertThat(super.jdbcTemplate, not(is(nullValue())));
+		assertThat(super.jdbcCleaner, not(is(nullValue())));
 	}
 
 
 	@Test
-	public void service_Returns_Role_List() {
+	public void read_Op_Reads_Entity_List() {
 		// GIVEN
 			// create entities, just in case if the database is empty
 		String entityId1 = "DUMMY" + super.getSalt();
@@ -53,7 +47,7 @@ public class RoleRestApiTests extends AbstractTests {
 
 
 	@Test
-	public void service_Returns_Role() {
+	public void read_Op_Reads_Entity() {
 		// GIVEN
 			// create entities, just in case if the database is empty
 		String entityId1 = "DUMMY" + super.getSalt();
@@ -69,14 +63,14 @@ public class RoleRestApiTests extends AbstractTests {
 				statusCode(200).								// check envelope
 				contentType(ContentType.JSON).
 				and().
-				body( "id", equalTo(entityId1) ).								// check if API returns just created entity
+				body( "id", equalTo(entityId1) ).								// check if service returns just created entity
 				body( "description", equalTo("тестовое описание") ).		// check if UTF-8 chain is not broken
 				body( "system", equalTo(true) );
 	}
 
 
 	@Test
-	public void service_Returns_Error_When_No_Role_Found() {
+	public void read_Op_Reports_When_No_Entity_Found() {
 		given().
 				//log().all().
 				header("Accept-Language", "ru-RU").		// to switch language; expected message should be in Russian
