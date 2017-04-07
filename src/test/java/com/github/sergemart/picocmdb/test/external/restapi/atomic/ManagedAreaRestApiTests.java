@@ -56,7 +56,7 @@ public class ManagedAreaRestApiTests extends AbstractTests {
 		String entityName1 = "DUMMY" + super.getSalt();
 		super.jdbcTemplate.update("INSERT INTO managed_area(name, description) VALUES (?, 'Тестовое описание.')", (Object[]) new String[] {entityName1});
 			// get auto-generated entity ID
-		String entityId1 = super.jdbcTemplate.queryForObject("SELECT id FROM managed_area WHERE (name = ?)", new String[] {entityName1}, String.class);
+		Integer entityId1 = super.jdbcTemplate.queryForObject("SELECT id FROM managed_area WHERE (name = ?)", new String[] {entityName1}, Integer.class);
 		super.jdbcCleaner.addTask("DELETE FROM managed_area WHERE (name = ?)", new String[] {entityName1});
 
 		given().
@@ -68,9 +68,9 @@ public class ManagedAreaRestApiTests extends AbstractTests {
 				statusCode(200).								// check envelope
 				contentType(ContentType.JSON).
 				and().
-				body( "id", equalTo(Integer.parseInt(entityId1)) ).				// check if service returns just created entity
-				body( "name", equalTo(entityName1) ).
-				body( "description", equalTo("Тестовое описание.") );		// check if UTF-8 chain is not broken
+				body( "id", is(entityId1) ).				// check if service returns just created entity
+				body( "name", is(entityName1) ).
+				body( "description", is("Тестовое описание.") );		// check if UTF-8 chain is not broken
 	}
 
 
@@ -78,7 +78,7 @@ public class ManagedAreaRestApiTests extends AbstractTests {
 	public void read_Op_Reports_When_No_Entity_Found() {
 		given().
 				log().all().
-				header("Accept-Language", "ru-RU").				// to switch language; expected message should be in Russian
+				header("Accept-Language", "ru-RU").				// switch language; expected message should be in Russian
 		when().
 				get(super.baseRestUrl + "/managedareas/nosuchid").	// no such entity
 		then().
@@ -86,10 +86,10 @@ public class ManagedAreaRestApiTests extends AbstractTests {
 				assertThat().statusCode(400).					// check envelope
 				contentType(ContentType.JSON).
 				and().
-				body( "exceptionName", equalTo("com.github.sergemart.picocmdb.exception.NoSuchObjectException") ).
-				body( "errorName", equalTo("MANAGEDAREANOTFOUND") ).
-				body( "localizedMessage", equalTo("Область управления не найдена.") ). // check if the language is switched
-				body( "errorCode", equalTo("1000404") );
+				body( "exceptionName", is("com.github.sergemart.picocmdb.exception.NoSuchObjectException") ).
+				body( "errorName", is("MANAGEDAREANOTFOUND") ).
+				body( "localizedMessage", is("Область управления не найдена.") ). // check if the language is switched
+				body( "errorCode", is("1000404") );
 	}
 
 	// -------------- CREATE --------------
@@ -105,7 +105,7 @@ public class ManagedAreaRestApiTests extends AbstractTests {
 		jsonMap.put("name", entityName1);
 		jsonMap.put("description", "Тестовое описание.");
 
-		Integer receivedEntityId1 = // to check it later directly via JDBC
+		Integer receivedEntityId1 = // check it later directly via JDBC
 		given().
 				//log().all().
 				body(jsonMap).
@@ -118,12 +118,12 @@ public class ManagedAreaRestApiTests extends AbstractTests {
 				contentType(ContentType.JSON).
 				and().
 				body( "", hasKey("id") ).   									// check if service returns just created entity
-				body( "name", equalTo(entityName1) ).
-				body( "description", equalTo("Тестовое описание.") ).	// check if UTF-8 chain is not broken
+				body( "name", is(entityName1) ).
+				body( "description", is("Тестовое описание.") ).	// check if UTF-8 chain is not broken
 		 extract().
 				path("id");
 
-		// to extra check directly in database
+		// extra check directly in database
 		Integer entityId1 = super.jdbcTemplate.queryForObject("SELECT id FROM managed_area WHERE (name = ?)", new String[] {entityName1}, Integer.class);
 		assertThat(entityId1, is(receivedEntityId1));
 	}
@@ -145,7 +145,7 @@ public class ManagedAreaRestApiTests extends AbstractTests {
 				log().all().
 				body(jsonMap).
 				contentType(ContentType.JSON).
-				header("Accept-Language", "ru-RU"). 			// to switch language; expected message should be in Russian
+				header("Accept-Language", "ru-RU"). 			// switch language; expected message should be in Russian
 		when().
 				post(super.baseRestUrl + "/managedareas/").
 		then().
@@ -153,10 +153,10 @@ public class ManagedAreaRestApiTests extends AbstractTests {
 				statusCode(400).									// check envelope
 				contentType(ContentType.JSON).
 				and().
-				body( "exceptionName", equalTo("com.github.sergemart.picocmdb.exception.ObjectAlreadyExistsException") ).
-				body( "errorName", equalTo("MANAGEDAREAEXISTS") ).
-				body( "localizedMessage", equalTo("Область управления уже существует.") ). // check if the language is switched
-				body( "errorCode", equalTo("1000405") );
+				body( "exceptionName", is("com.github.sergemart.picocmdb.exception.ObjectAlreadyExistsException") ).
+				body( "errorName", is("MANAGEDAREAEXISTS") ).
+				body( "localizedMessage", is("Область управления уже существует.") ). // check if the language is switched
+				body( "errorCode", is("1000405") );
 	}
 
 
@@ -168,21 +168,48 @@ public class ManagedAreaRestApiTests extends AbstractTests {
 		jsonMap.put("badfield2", "Некое значение.");
 
 		given().
-				log().all().
+				//log().all().
 				body(jsonMap).
 				contentType(ContentType.JSON).
-				header("Accept-Language", "ru-RU").				// to switch language; expected message should be in Russian
+				header("Accept-Language", "ru-RU").				// switch language; expected message should be in Russian
 		when().
 				post(super.baseRestUrl + "/managedareas/").
 		then().
-				log().all().
+				//log().all().
 				statusCode(400).								// check envelope
 				contentType(ContentType.JSON).
 				and().
-				body( "exceptionName", equalTo("com.github.sergemart.picocmdb.exception.WrongDataException") ).
-				body( "errorName", equalTo("MANAGEDAREABAD") ).
-				body( "localizedMessage", equalTo("Область управления содержит неверные данные.") ). // check if the language is switched
-				body( "errorCode", equalTo("1000500") );
+				body( "exceptionName", is("com.github.sergemart.picocmdb.exception.WrongDataException") ).
+				body( "errorName", is("MANAGEDAREABAD") ).
+				body( "localizedMessage", is("Область управления содержит неверные данные.") ). // check if the language is switched
+				body( "errorCode", is("1000500") );
+	}
+
+	// -------------- DELETE --------------
+
+	@Test
+	public void delete_Op_Deletes_Entity() {
+		// GIVEN
+			// prepare ID, create entity and add task to delete this entity
+		String entityName1 = "DUMMY" + super.getSalt();
+		super.jdbcTemplate.update("INSERT INTO managed_area(name, description) VALUES (?, 'Тестовое описание.')", (Object[]) new String[] {entityName1});
+			// just in case if delete fails for any reason
+		super.jdbcCleaner.addTask("DELETE FROM managed_area WHERE (name = ?)", new String[] {entityName1});
+			// get auto-generated entity ID
+		Integer entityId1 = super.jdbcTemplate.queryForObject("SELECT id FROM managed_area WHERE (name = ?)", new String[] {entityName1}, Integer.class);
+
+		given().
+				log().all().
+		when().
+				delete(super.baseRestUrl + "/managedareas/" + entityId1).
+		then().
+				log().all().
+				statusCode(200);									// check envelope
+
+		// extra check directly in database
+		Integer entityCount = super.jdbcTemplate.queryForObject("SELECT COUNT(*) FROM managed_area WHERE (name = ?)", new String[] {entityName1}, Integer.class);
+		assertThat(entityCount, is(0));
+
 	}
 
 

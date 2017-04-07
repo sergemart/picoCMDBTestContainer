@@ -63,9 +63,9 @@ public class RoleRestApiTests extends AbstractTests {
 				statusCode(200).								// check envelope
 				contentType(ContentType.JSON).
 				and().
-				body( "id", equalTo(entityId1) ).								// check if service returns just created entity
-				body( "description", equalTo("тестовое описание") ).		// check if UTF-8 chain is not broken
-				body( "system", equalTo(true) );
+				body( "id", is(entityId1) ).								// check if service returns just created entity
+				body( "description", is("тестовое описание") ).		// check if UTF-8 chain is not broken
+				body( "system", is(true) );
 	}
 
 
@@ -73,7 +73,7 @@ public class RoleRestApiTests extends AbstractTests {
 	public void read_Op_Reports_When_No_Entity_Found() {
 		given().
 				//log().all().
-				header("Accept-Language", "ru-RU").		// to switch language; expected message should be in Russian
+				header("Accept-Language", "ru-RU").		// switch language; expected message should be in Russian
 		when().
 				get(super.baseRestUrl + "/roles/nosuchid").	// no such entity
 		then().
@@ -81,10 +81,10 @@ public class RoleRestApiTests extends AbstractTests {
 				assertThat().statusCode(400).					// check envelope
 				contentType(ContentType.JSON).
 				and().
-				body( "exceptionName", equalTo("com.github.sergemart.picocmdb.exception.NoSuchObjectException") ).
-				body( "errorName", equalTo("ROLENOTFOUND") ).
-				body( "localizedMessage", equalTo("Роль не найдена.") ). // check if the language is switched
-				body( "errorCode", equalTo("1000404") );
+				body( "exceptionName", is("com.github.sergemart.picocmdb.exception.NoSuchObjectException") ).
+				body( "errorName", is("ROLENOTFOUND") ).
+				body( "localizedMessage", is("Роль не найдена.") ). // check if the language is switched
+				body( "errorCode", is("1000404") );
 	}
 
 }

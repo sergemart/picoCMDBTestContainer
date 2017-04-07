@@ -10,6 +10,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.lang.management.ManagementFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -28,9 +29,9 @@ public abstract class AbstractTests {
 	public final JdbcCleaner jdbcCleaner = new JdbcCleaner();
 
 
-	// to make unique entities' IDs to prevent constraint violation when test executed in parallel
+	// make somewhat unique entities' IDs to prevent constraint violation when test executed in parallel
 	protected String getSalt() {
-		return String.valueOf(counter.incrementAndGet());
+		return String.valueOf(counter.incrementAndGet() + "@" + ManagementFactory.getRuntimeMXBean().getName());
 	}
 
 
@@ -39,7 +40,7 @@ public abstract class AbstractTests {
 		this.baseUiUrl = this.env.getProperty("testing.sut.ui.url");
 		this.baseRestUrl = this.env.getProperty("testing.sut.rest.url");
 
-		// to inject beans to rules (rules are instantiated before Spring context loads)
+		// inject beans to rules (rules are instantiated before Spring context loads)
 		jdbcCleaner.setJdbcTemplate(jdbcTemplate);
 	}
 

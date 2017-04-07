@@ -30,7 +30,7 @@ public class JdbcCleaner implements TestRule {
 	}
 
 
-	// to register a new task; should be called in a test
+	// register a new task; should be called in a test
 	public void addTask (String sqlQuery, Object[] sqlQueryParameters) {
 		this.jdbcTaskList.add(new JdbcTask(sqlQuery, sqlQueryParameters));
 	}
