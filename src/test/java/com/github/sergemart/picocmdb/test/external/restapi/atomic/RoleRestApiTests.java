@@ -23,7 +23,7 @@ public class RoleRestApiTests extends AbstractTests {
 	@Test
 	public void read_Op_Reads_Entity_List() {
 		// GIVEN
-			// create entities, just in case if the database is empty
+			// create entities, just in case if the database is empty, and add tasks to delete these entities after the test
 		String entityId1 = "DUMMY" + super.getSalt();
 		String entityId2 = "DUMMY" + super.getSalt();
 		super.jdbcTemplate.update("INSERT INTO role(id, description, is_system) VALUES (?, 'dummy description', true)", (Object[]) new String[] {entityId1});
@@ -49,7 +49,7 @@ public class RoleRestApiTests extends AbstractTests {
 	@Test
 	public void read_Op_Reads_Entity() {
 		// GIVEN
-			// create entities, just in case if the database is empty
+			// create entity, just in case if the database is empty, and add task to delete this entity after the test
 		String entityId1 = "DUMMY" + super.getSalt();
 		super.jdbcTemplate.update("INSERT INTO role(id, description, is_system) VALUES (?, 'тестовое описание', true)", (Object[]) new String[] {entityId1});
 		super.jdbcCleaner.addTask("DELETE FROM role WHERE (id = ?)", new String[] {entityId1});
@@ -70,7 +70,7 @@ public class RoleRestApiTests extends AbstractTests {
 
 
 	@Test
-	public void read_Op_Reports_When_No_Entity_Found() {
+	public void read_Op_Reports_When_No_Such_Entity() {
 		given().
 				//log().all().
 				header("Accept-Language", "ru-RU").		// switch language; expected message should be in Russian
