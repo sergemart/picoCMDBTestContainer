@@ -19,6 +19,7 @@ public class RoleRestApiTests extends AbstractTests {
 		assertThat(super.jdbcCleaner, not(is(nullValue())));
 	}
 
+	// -------------- READ --------------
 
 	@Test
 	public void read_Op_Reads_Entity_List() {
@@ -49,7 +50,7 @@ public class RoleRestApiTests extends AbstractTests {
 	@Test
 	public void read_Op_Reads_Entity() {
 		// GIVEN
-			// create entity, just in case if the database is empty; add task to delete this entity after the test
+			// create entity; add task to delete this entity after the test
 		String entityId1 = "DUMMY" + super.getSalt();
 		super.jdbcTemplate.update("INSERT INTO role(id, description, is_system) VALUES (?, 'тестовое описание', true)", (Object[]) new String[] {entityId1});
 		super.jdbcCleaner.addTask("DELETE FROM role WHERE (id = ?)", new String[] {entityId1});
@@ -57,7 +58,7 @@ public class RoleRestApiTests extends AbstractTests {
 		given().
 				//log().all().
 		when().
-				get(super.baseRestUrl + "/roles/" + entityId1).
+				get(super.baseRestUrl + "/roles/" + entityId1.toLowerCase()).
 		then().
 				//log().all().
 				statusCode(200).								// check envelope
