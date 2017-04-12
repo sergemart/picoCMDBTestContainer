@@ -255,4 +255,34 @@ public class ConfigurationItemTypeRestApiTests extends AbstractTests {
 				body("errorCode", is("1000404"));
 	}
 
+
+	@Test
+	public void delete_Op_Reports_When_Dependent_Entity_Exists() {
+		// GIVEN
+			// create a parent entity which would be deleted
+		String entityId1 = "DUMMY" + super.getSalt();
+		super.jdbcTemplate.update("INSERT INTO configuration_item_type(id) VALUES (?)", (Object[]) new String[] {entityId1});
+			// create a child entity
+		String childName1 = "DUMMY" + super.getSalt();
+		super.jdbcTemplate.update("INSERT INTO configuration_item(name, ci_type_id) VALUES (?, ?)", (Object[]) new String[] {childName1, entityId1});
+			// add tasks (in right order) to delete test entities after the test
+		super.jdbcCleaner.addTask("DELETE FROM configuration_item WHERE (name = ?)", new String[] {childName1});
+		super.jdbcCleaner.addTask("DELETE FROM configuration_item_type WHERE (id = ?)", new String[] {entityId1});
+
+		given().
+				//log().all().
+				header("Accept-Language", "ru-RU").                // switch language; expected message should be in Russian
+		when().
+				delete(super.baseRestUrl + "/configurationitemtypes/" + entityId1).
+		then().
+				//log().all().
+				assertThat().statusCode(400).                    // check envelope
+				contentType(ContentType.JSON).
+				and().
+				body("exceptionName", is("com.github.sergemart.picocmdb.exception.DependencyExistsException")).
+				body("errorName", is("CONFIGURATIONITEMEXISTS")).
+				body("localizedMessage", is("Существуют зависимые конфигурационные единицы.")). // check if the language is switched
+				body("errorCode", is("1000406"));
+	}
+
 }
