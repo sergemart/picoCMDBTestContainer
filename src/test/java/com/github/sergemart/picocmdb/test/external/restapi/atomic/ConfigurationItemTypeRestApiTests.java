@@ -88,6 +88,38 @@ public class ConfigurationItemTypeRestApiTests extends AbstractTests {
 				body( "errorCode", is("1000404") );
 	}
 
+
+	@Test
+	public void read_Op_Reads_Dependent_Entity_List() {
+		// GIVEN
+			// create a parent entity
+		String entityId1 = "DUMMY" + super.getSalt();
+		super.jdbcTemplate.update("INSERT INTO configuration_item_type(id) VALUES (?)", (Object[]) new String[] {entityId1});
+			// create child entities
+		String childName1 = "DUMMY" + super.getSalt();
+		String childName2 = "DUMMY" + super.getSalt();
+		super.jdbcTemplate.update("INSERT INTO configuration_item(name, ci_type_id) VALUES (?, ?)", (Object[]) new String[] {childName1, entityId1});
+		super.jdbcTemplate.update("INSERT INTO configuration_item(name, ci_type_id) VALUES (?, ?)", (Object[]) new String[] {childName2, entityId1});
+			// add tasks (in right order) to delete test entities after the test
+		super.jdbcCleaner.addTask("DELETE FROM configuration_item WHERE (name = ?)", new String[] {childName1});
+		super.jdbcCleaner.addTask("DELETE FROM configuration_item WHERE (name = ?)", new String[] {childName2});
+		super.jdbcCleaner.addTask("DELETE FROM configuration_item_type WHERE (id = ?)", new String[] {entityId1});
+		given().
+				//log().all().
+		when().
+				get(super.baseRestUrl + "/configurationitemtypes/" + entityId1 + "/configurationitems").
+			then().
+				//log().all().
+				statusCode(200).								// check envelope
+				contentType(ContentType.JSON).
+				and().
+				body( "size()", is(2) ).				// check if body is a collection of a right size
+				body( "get(1)", hasKey("id") ).				// check if 2-nd member has expected fields
+				body( "get(1)", hasKey("name") ).
+				body( "get(1)", hasKey("description") ).
+				body( "get(1).type.id", is(entityId1) );
+	}
+
 	// -------------- CREATE --------------
 
 	@Test
