@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.*;
 import static io.restassured.RestAssured.given;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.github.sergemart.picocmdb.test.external.AbstractTests;
@@ -71,6 +72,52 @@ public class ManagedAreaRestApiTests extends AbstractTests {
 				body( "id", is(entityId1) ).								// check if service returns just created entity
 				body( "name", is(entityName1) ).
 				body( "description", is("Тестовое описание.") );	// check if UTF-8 chain is not broken
+	}
+
+
+	@Test
+	public void read_Op_Reads_Linked_Entity_List() {
+		// GIVEN
+			// create a tested entity; this entity will be deleted on rollback after the test
+		String entityName1 = "DUMMY" + super.getSalt();
+		super.jdbcTemplate.update("INSERT INTO managed_area(name) VALUES (?)", (Object[]) new String[] {entityName1});
+			// get auto-generated ID of the created tested entity
+		Long entityId1 = super.jdbcTemplate.queryForObject("SELECT id FROM managed_area WHERE (name = ?)", new String[] {entityName1}, Long.class);
+			// create parent (classifier) entity for linked entities; the entity will be deleted on rollback after the test
+		String parentId1 = "DUMMY" + super.getSalt();
+		super.jdbcTemplate.update("INSERT INTO configuration_item_type(id) VALUES (?)", (Object[]) new String[] {parentId1});
+			// create will-be-linked entities; the entities will be deleted on rollback after the test
+		String linkedName1 = "DUMMY" + super.getSalt();
+		String linkedName2 = "DUMMY" + super.getSalt();
+		super.jdbcTemplate.update("INSERT INTO configuration_item(name, ci_type_id) VALUES (?, ?)", (Object[]) new String[]{linkedName1, parentId1});
+		super.jdbcTemplate.update("INSERT INTO configuration_item(name, ci_type_id) VALUES (?, ?)", (Object[]) new String[]{linkedName2, parentId1});
+			// get auto-generated IDs of created will-be-linked entities
+		Long linkedId1 = super.jdbcTemplate.queryForObject("SELECT id FROM configuration_item WHERE (name = ?)", new String[] {linkedName1}, Long.class);
+		Long linkedId2 = super.jdbcTemplate.queryForObject("SELECT id FROM configuration_item WHERE (name = ?)", new String[] {linkedName2}, Long.class);
+			// create links between the tested entity and will-be-linked entities; these links will be deleted on rollback after the test
+		super.jdbcTemplate.update("INSERT INTO ci_marea_link(ci_id, marea_id) VALUES (?, ?)", (Object[]) new Long[] {linkedId1, entityId1});
+		super.jdbcTemplate.update("INSERT INTO ci_marea_link(ci_id, marea_id) VALUES (?, ?)", (Object[]) new Long[] {linkedId2, entityId1});
+			// add tasks (in right order) to delete test entities after the test
+		super.jdbcCleaner.addTask("DELETE FROM ci_marea_link WHERE (marea_id = ?)", new Long[] {entityId1});
+		super.jdbcCleaner.addTask("DELETE FROM configuration_item WHERE (ci_type_id = ?)", new String[] {parentId1});
+		super.jdbcCleaner.addTask("DELETE FROM configuration_item_type WHERE (id = ?)", new String[] {parentId1});
+		super.jdbcCleaner.addTask("DELETE FROM managed_area WHERE (name = ?)", new String[] {entityName1});
+		given().
+				log().all().
+		when().
+				get(super.baseRestUrl + "/managedareas/" + entityId1 + "/configurationitems").
+		then().
+				log().all().
+				statusCode(200).						// check envelope
+				contentType(ContentType.JSON).
+				and().
+				body( "size()", is(2) ).				// check if body is a collection of a right size
+				body( "get(1)", hasKey("id") ).				// check if 2-nd member has expected fields
+				body( "get(1)", hasKey("name") ).
+				body( "get(1)", hasKey("description") ).
+				body( "get(1)", hasKey("type") ).
+				body( "get(1).type", hasKey("id") ).			// check if the nested object has expected fields
+				body( "get(1).type", hasKey("description") );
 	}
 
 
